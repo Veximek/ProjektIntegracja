@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://vexim2002:5vPHmA3YRxj7tWOj@cluster0.g6labyw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://vexim2002:<password>@cluster0.g6labyw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 async function run() {
   try {
@@ -13,3 +13,4 @@ async function run() {
   }
 }
 run().catch(console.dir);
+
