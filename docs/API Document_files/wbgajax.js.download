@@ -1,0 +1,24 @@
+$(function() {
+            $('[data-ajax-component-wbg]').each(function() {
+                var $this = $(this),
+                    url = $this.data('url'),
+                    queryParams = $this.data('ajax-query-parameters');
+
+                url = url+"?";
+
+                if (queryParams) {
+                    url +=  queryParams;
+
+                }
+
+                $.get(url).done(function(data) {
+                        $this.replaceWith(data);
+                        pageTopAligner();
+                });
+            });
+ });
+
+function pageTopAligner() { 
+
+    $(".hero-v1-section, .hero-v3-section").css("margin-top", "-"+$(".lang-toggler.language_toggler.parbase").outerHeight()+"px");
+}

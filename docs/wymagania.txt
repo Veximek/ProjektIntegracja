@@ -1,0 +1,24 @@
+Dzień dobry, wymagania do projektu zaliczeniowego znajdują się w materiałach do zajęć laboratoryjnych na stronie 107. Proszę stworzyć grupy 2-osobowe i wybrać temat projektu ze strony 109 (ewentualnie zaproponować własny). Do 21 maja proszę odpowiedzieć na wiadomość podając skład grupy oraz wybrany temat 
+4 i 11 czerwca zaprezentowanie projektów
+Dla podwyższenia oceny końcowej, można oddać zrobione laboratoria, lecz nie są one wymagane.
+Ocena 3:
+1. Obsługa usługi SOAP lub REST dla pobierania danych.
+2. Implementacja mechanizmów walidacji przetwarzanych danych
+3. Zapis pozyskanych danych do bazy danych aplikacji oraz odczyt danych z bazy do aplikacji z wykorzystaniem ORM.
+4. Implementacja mechanizmu uwierzytelnienia i autoryzacji.
+ 
+Ocena 4: wszystko co na ocenę 3 oraz:
+1. Wykorzystanie warstwy graficznej: interface użytkownika, pobieranie danych, wyświetlanie wyników itd.
+2. Eksport danych w formacie XML lub JSON.
+ 
+Ocena 5: wszystko co na ocenę 3,4 oraz:
+1. Stworzenie kontenera Docker obejmującego stworzoną aplikację lub zespół aplikacji wraz ze wszystkimi koniecznymi do działania składnikami.
+ 
+Extra
+1. Dodatkowe zaawansowane metody wizualizacji oraz interakcji z danymi poprzez interfejs użytkownika, np. w trybie współdzielonym
+2. Dodatkowe innowacje lub usprawnienia w obszarze funkcjonalności, które przynoszą dodatkową wartość użytkownikom lub ulepszają wydajność i bezpieczeństwo systemu.
+3. mplementacja mechanizmu transakcji w dostępie (odczyt zapis) do bazy danych.
+4. Funkcje usprawniające dostęp do współdzielonych zasobów (poziomy izolacji w bazach danych).
+
+Temat:
+5. Zestawienie różnych danych statystycznych przed wybuchem pandemii COVID-19 (przed 03.2020 r.) oraz w czasie jej trwania (po 03.2020 r.), prezentacja zmian wartości w wybranym okresie.

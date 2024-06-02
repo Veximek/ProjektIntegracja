@@ -1,0 +1,334 @@
+  /*=== begin documents and report css ===*/
+  /*=== begin documents and report related and body components css ===*/
+
+.ajax-div {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: grey;
+  opacity: .8
+}
+
+.ajax-loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -32px;
+  margin-top: -32px;
+  display: block
+}
+.related-v1-section .related-v1-wrapper ul,
+.related-auto-pull .related-v1-wrapper ul {
+  padding: 0px;
+  list-style: none; }
+  .related-v1-section .related-v1-wrapper ul li,
+  .related-auto-pull .related-v1-wrapper ul li {
+    font-size: 14px;
+    line-height: 22px;
+    color: #333333;
+    margin: 0px 0px 16px 0px; }
+    .related-v1-section .related-v1-wrapper ul li a:hover,
+    .related-auto-pull .related-v1-wrapper ul li a:hover {
+      text-decoration: underline; }
+
+.related-v1-section .related-v1-wrapper:first-of-type,
+.related-auto-pull .related-v1-wrapper:first-of-type {
+  margin-bottom: 32px; }
+
+.related-v1-section .related-v1-wrapper:last-of-type,
+.related-auto-pull .related-v1-wrapper:last-of-type {
+  margin-bottom: 0px; }
+
+.related-v1-section .related-v1-wrapper .s01v1-sub-links,
+.related-auto-pull .related-v1-wrapper .s01v1-sub-links {
+  margin-top: 4px; }
+
+.related-v1-section p,
+.related-auto-pull p {
+  margin-bottom: 10px; }
+  .related-v1-section p a:hover,
+  .related-auto-pull p a:hover {
+    text-decoration: underline; }
+.c14v1-body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  color: #333333; }
+  .c14v1-body h1 {
+    font-size: 40px;
+    line-height: 44px;
+    color: #333333; }
+  .c14v1-body h3 {
+    font-size: 28px;
+    line-height: 30px;
+    color: #333333; }
+  .c14v1-body p {
+    margin-bottom: 16px; }
+  .c14v1-body a:hover {
+    text-decoration: underline; }
+  .c14v1-body ul {
+    list-style-type: disc;
+    padding-left: 30px;
+    margin-left: 20px;
+    margin-bottom: 16px; }
+    .c14v1-body ul li {
+      margin-bottom: 16px; }
+      .c14v1-body ul li a:hover {
+        text-decoration: underline; }
+  .c14v1-body ol {
+    list-style-type: decimal;
+    padding-left: 30px;
+    margin-left: 20px;
+    margin-bottom: 16px; }
+    .c14v1-body ol li {
+      margin-bottom: 16px; }
+      .c14v1-body ol li a:hover {
+        text-decoration: underline; }
+  /*=== end documents and report related and body components css ===*/
+
+/********* documents-css start **********/        
+
+.blurb-text a.disabled {
+    color: #333 !important;    
+    pointer-events: none !important;
+}
+
+.listing_search .header-search-section i.search-submit-icon {
+    color: #ec563b !important;
+}
+
+.main-detail ul li .document-info a {
+    display: block;
+}
+.detail-download-section {
+    margin-bottom: 16px;
+}
+
+.advanced-search-main-section .fa-question {
+  font-size: 12px;
+  background-color: #d8e7f5;
+  color: #0071BC;
+  border: 1px solid #0071BC;
+  border-radius: 100%;
+  vertical-align: text-top;
+  padding: 3px;
+  margin-left: 4px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  opacity: 0.5;
+  }
+
+.advanced-search-main-section .fa-question:before {
+  margin-top: -1px; }
+
+
+/* == Begin documents advance search Dropdwon Media- Query ==*/
+@media (min-width: 768px) and (max-width: 1200px) {
+  .dropdown-wrapper {
+    padding: 16px;
+    margin: 0px 0px 32px 0px;
+    background-color: #f6f6f6; }
+    .dropdown-wrapper h5 {
+      font-weight: bold;
+      line-height: 22px;
+      margin: 0px 0px 16px 0px; }
+  .dropdown-group, .dropdown-v1 {
+    margin: 0px 0px 16px 0px; } }
+
+@media (max-width: 767px) {
+  .dropdown-wrapper {
+    padding: 0px;
+    margin: 0px 0px 32px 0px;
+    background-color: #ffffff; }
+    .dropdown-wrapper h5 {
+      font-weight: bold;
+      line-height: 22px;
+      margin: 0px 0px 16px 0px; }
+    .dropdown-wrapper .dropdown-group, .dropdown-wrapper .dropdown-v1 {
+      margin: 0px 0px 16px 0px; } }
+
+.more-popup-dropdown {
+  display: inline; }
+  .more-popup-dropdown .dropdown-backdrop {
+    position: absolute; }
+  .more-popup-dropdown .dropdown-menu {
+    font-size: 12px;
+    line-height: 16px;
+    min-width: 20vw;
+    background-color: #fafdff;
+    border: 2px solid #d8e7f5;
+    color: #333333;
+    text-align: left;
+    border-radius: 6px;
+    padding: 16px;
+    z-index: 1;
+    left: initial; }
+    .more-popup-dropdown .dropdown-menu::before {
+      content: "";
+      position: absolute;
+      top: -16px;
+      margin-left: 0px;
+      border-width: 8px;
+      border-style: solid;
+      border-color: transparent transparent #d8e7f5 transparent; }
+  .more-popup-dropdown .more-content {
+    max-height: 12em;
+    overflow: hidden;
+    position: relative; }
+    .more-popup-dropdown .more-content.open-content {
+      max-height: none; }
+    .more-popup-dropdown .more-content p {
+      margin-bottom: 16px; }
+  .more-popup-dropdown .morelink {
+    position: relative;
+    bottom: 0;
+    right: 0px;
+    z-index: 1;
+    /* margin-bottom: 13px; */
+    margin: 12px 0px;
+    display: block;
+    width: 100%;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: right; }
+  @media (min-width: 1200px) {
+    .more-popup-dropdown .dropdown-menu {
+      width: 25vw; } }
+  @media (max-width: 1199px) {
+    .more-popup-dropdown .dropdown-menu {
+      width: 45vw; } }
+  @media (max-width: 768px) and (min-width: 320px) {
+    .more-popup-dropdown .dropdown-menu {
+      width: 85vw; } }
+
+   /* == End Dropdwon ==*/
+
+   .search-listing {
+  word-wrap: break-word; }
+  .search-listing ul li {
+    margin-bottom: 32px; }
+    .search-listing ul li h3 a {
+      color: #333333; }
+      .search-listing ul li h3 a:hover {
+        color: #004c92; }
+  .search-listing ._loop_checkbox {
+    float: left; }
+
+.search-listing-img img {
+  width: 90px;
+  height: 90px;
+  float: left;
+  margin-right: 16px; }
+
+.search-listing-content {
+  display: table-cell; }
+  .search-listing-content .hammer {
+    color: #333; }
+
+.search-listing-info {
+  font-size: 13px;
+  line-height: 22px; }
+  .search-listing-info .info-list-item {
+    padding-right: 16px; }
+
+.search-listing-button {
+  margin-top: 16px; }
+  .search-listing-button .btn-lg {
+    margin-bottom: 0px; }
+
+.info-list-title {
+  font-weight: bold; }
+
+
+/******* documents-css end **********/
+
+@import "~ngx-tabset/ngx-tabset";
+@import "app/app.component";
+.active{
+    color: #333;
+}
+
+.drop-right{
+    margin-right: 16px;
+    margin-top: 25px;
+    float: right;
+}
+
+.margin-right-35{
+    margin-right: 17px !important;
+}
+.margin-left-10{
+    margin-left: 10px !important;
+}
+.icons_inactive {
+    color: #787878 !important;
+    text-decoration: none !important;
+    cursor: default !important;
+}
+.doc-series b{
+	font-size: x-large;
+}
+.main-detail {
+  font-size: 12px;
+  line-height: 17px;
+  padding: 16px; }
+  @media (min-width: 768px) {
+    .main-detail {
+      padding: 32px 32px 0px 32px; } }
+  .main-detail ul li {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e5e5;
+    display: inline-block;
+    width: 100%; }
+    .main-detail ul li label {
+      width: 50%;
+      float: left;
+      font-weight: bold; }
+    .main-detail ul li .document-info {
+      display: inline-block;
+      float: left;
+      width: 50%;
+	 word-break: break-word;}
+    .main-detail ul li .document-icon {
+      font-size: 18px;
+      line-height: 29px;
+      color: #0071bc;
+      width: 25px;
+      display: inline-block;
+      float: left; }
+    .main-detail ul li .downloads-info {
+      font-size: 14px;
+      line-height: 26px;
+      width: 80%;
+      display: inline-block; }
+  .main-detail ul.document-link li {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 0px solid #e5e5e5;
+    display: inline-block;
+    width: 100%; }
+/*** document listing css review fix ***/
+.sidebar-list .submit-btn {
+    position: relative !important;
+}
+.sidebar-list .submit-btn i.fa.fa-caret-right {
+    color: #fff;
+    padding-left: 14px;
+    padding-top: 3px;
+    font-size: 30px;
+}
+table.m-spec-date div.submit-btn a {
+    display: table;
+}
+table.m-spec-date {
+    margin: 16px 0px 16px 0px;
+    display: table;
+    width: 100%;
+}
+
+/*** document listing css review fix end ***/

@@ -1,0 +1,46 @@
+var offsetfrommouse;
+var offsetfrommouselocation;
+var offsetfrommouselocationaction = "http://web.worldbank.org/external/default/main?pagePK=7846481&piPK=7846484&theSitePK=523679";
+var ecid = "EXT_WBEmailShare_EXT";
+if(window.location.href.indexOf("http://beta") > -1)
+{
+	ecid = "SHR_SiteEmailShare_EXT";
+}
+function MM_openBrWindow(){
+    
+    var noOfForms = $("li.email");
+    if(noOfForms.length>1){
+    //alert("if");
+        console.log('hello');
+        document.emailfrm[0].reftitle.value=encodeURIComponent(document.title);
+        document.emailfrm[0].reflink.value=location.href+"?cid="+ecid;
+        document.emailfrm[0].action=offsetfrommouselocationaction;
+        emailpopup=window.open(offsetfrommouselocationaction, 'emailpopup','scrollbars=no,resizable=yes,width=350,height=510');
+        document.emailfrm[0].submit();
+    } else {
+    //alert("else"+document.title+"-"+location.href);
+        //alert(document.title + " - " + location.href );
+        document.emailfrm.reftitle.value=encodeURIComponent(document.title);
+        console.log("ecid:"+location.href+"?cid="+ecid);
+        document.emailfrm.reflink.value=location.href+"?cid="+ecid;
+       	document.emailfrm.action=offsetfrommouselocationaction;
+        emailpopup=window.open(offsetfrommouselocationaction, 'emailpopup','scrollbars=no,resizable=yes,width=350,height=510');
+        document.emailfrm.submit();
+        
+    }
+    //return false;
+}
+
+$(document).ready(function(){
+     $("#plus").click(function(){
+      $("#plus-drop").toggle();
+    if($(this).hasClass("plus-btn")){
+     $(this).removeClass("plus-btn");
+     $(this).addClass("minus-btn");
+    } else{
+      $(this).addClass("plus-btn");
+    $(this).removeClass("minus-btn");
+     }
+     });
+
+});

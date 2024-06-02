@@ -1,0 +1,40 @@
+var DEBUG = false;
+if(!DEBUG){
+    if(!window.console) window.console = {};
+    var methods = ["log", "debug", "warn", "info", "dir", "dirxml", "trace", "profile", "error"];
+    for(var i=0;i<methods.length;i++){
+        console[methods[i]] = function(){};
+    }
+
+    /*
+    //IE friendly
+    if (typeof console == "undefined" || typeof console.log == "undefined") 
+    {
+        var console = { log: function() {} }; 
+    }
+    */
+    
+    /*try {
+        if (typeof(window.console) != "undefined") {
+            window.console = {};
+            window.console.log = function () {
+            };
+            window.console.info = function () {
+            };
+            window.console.warn = function () {
+            };
+            window.console.error = function () {
+            };
+        }
+        
+        if (typeof(alert) !== "undefined") {
+            alert = function ()
+            {
+                
+            }
+        }
+        
+    } catch (ex) {
+        
+    }*/
+}

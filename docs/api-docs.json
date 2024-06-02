@@ -1,0 +1,681 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Covid API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/regions": {
+            "get": {
+                "tags": [
+                    "Region"
+                ],
+                "summary": "List of region names.",
+                "operationId": "regions",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/regionSorting"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sort"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTTP 200 OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/regionListPaginated"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/provinces/{iso}": {
+            "get": {
+                "tags": [
+                    "Region"
+                ],
+                "summary": "List of provinces by iso code.",
+                "operationId": "provinces",
+                "parameters": [
+                    {
+                        "name": "iso",
+                        "in": "path",
+                        "description": "The ISO code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "CHN"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/provinceSorting"
+                    },
+                    {
+                        "$ref": "#/components/parameters/sort"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTTP 200 OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/provinceListPaginated"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/reports": {
+            "get": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "List of reports.",
+                "operationId": "reports",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "The date of report in the format Y-m-d | default last added date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2020-04-16"
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "The query string for search by country/region and province",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "US Alabama"
+                    },
+                    {
+                        "name": "iso",
+                        "in": "query",
+                        "description": "Filter by country ISO code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "USA"
+                    },
+                    {
+                        "name": "region_name",
+                        "in": "query",
+                        "description": "Filter by country/region name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "US"
+                    },
+                    {
+                        "name": "region_province",
+                        "in": "query",
+                        "description": "Filter by province name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Alabama"
+                    },
+                    {
+                        "name": "city_name",
+                        "in": "query",
+                        "description": "Filter by city name (only for ISO code = USA)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Autauga"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTTP 200 OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/reportListPaginated"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        },
+        "/reports/total": {
+            "get": {
+                "tags": [
+                    "Report"
+                ],
+                "summary": "Total data by date.",
+                "operationId": "total",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "The date of report in the format Y-m-d | default last added date",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2020-03-14"
+                    },
+                    {
+                        "name": "iso",
+                        "in": "query",
+                        "description": "Filter by country ISO code",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "USA"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "HTTP 200 OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/totalResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "region": {
+                "properties": {
+                    "iso": {
+                        "type": "string",
+                        "example": "CHN"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "China"
+                    }
+                },
+                "type": "object"
+            },
+            "regionList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/region"
+                }
+            },
+            "regionListResponse": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/regionList"
+                    }
+                },
+                "type": "object"
+            },
+            "province": {
+                "properties": {
+                    "iso": {
+                        "type": "string",
+                        "example": "CHN"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Hubei"
+                    },
+                    "province": {
+                        "type": "string",
+                        "example": "Hunan"
+                    },
+                    "lat": {
+                        "type": "string",
+                        "example": "29.1832"
+                    },
+                    "long": {
+                        "type": "string",
+                        "example": "120.0934"
+                    }
+                },
+                "type": "object"
+            },
+            "provinceList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/province"
+                }
+            },
+            "provinceListResponse": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/provinceList"
+                    }
+                },
+                "type": "object"
+            },
+            "provinceListPaginated": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/paginator"
+                    },
+                    {
+                        "$ref": "#/components/schemas/provinceListResponse"
+                    }
+                ]
+            },
+            "regionListPaginated": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/paginator"
+                    },
+                    {
+                        "$ref": "#/components/schemas/regionListResponse"
+                    }
+                ]
+            },
+            "report": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "example": "2020-02-28"
+                    },
+                    "confirmed": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "deaths": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "recovered": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "confirmed_diff": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "deaths_diff": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "recovered_diff": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "last_update": {
+                        "type": "string",
+                        "example": "2020-02-01 11:53:00"
+                    },
+                    "active": {
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "active_diff": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "fatality_rate": {
+                        "type": "number",
+                        "example": 0.1667
+                    },
+                    "region": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/additionRegion"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "reportList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/report"
+                }
+            },
+            "reportListResponse": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/reportList"
+                    }
+                },
+                "type": "object"
+            },
+            "reportListPaginated": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/paginator"
+                    },
+                    {
+                        "$ref": "#/components/schemas/provinceListResponse"
+                    }
+                ]
+            },
+            "additionRegion": {
+                "properties": {
+                    "iso": {
+                        "type": "string",
+                        "example": "CHN"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "China"
+                    },
+                    "province": {
+                        "type": "string",
+                        "example": "Hubei"
+                    },
+                    "lat": {
+                        "type": "string",
+                        "example": "29.1832"
+                    },
+                    "long": {
+                        "type": "string",
+                        "example": "120.0934"
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/additionCity"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "additionCity": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Aleutians East"
+                    },
+                    "date": {
+                        "type": "string",
+                        "example": "2020-02-28"
+                    },
+                    "fips": {
+                        "type": "string",
+                        "example": "1001"
+                    },
+                    "lat": {
+                        "type": "string",
+                        "example": "29.1832"
+                    },
+                    "long": {
+                        "type": "string",
+                        "example": "120.0934"
+                    },
+                    "confirmed": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "deaths": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "confirmed_diff": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "deaths_diff": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "last_update": {
+                        "type": "string",
+                        "example": "2020-02-01 11:53:00"
+                    }
+                },
+                "type": "object"
+            },
+            "total": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "example": "2020-02-28"
+                    },
+                    "last_update": {
+                        "type": "string",
+                        "example": "2020-02-01 11:53:00"
+                    },
+                    "confirmed": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "confirmed_diff": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "deaths": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "deaths_diff": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "recovered": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "recovered_diff": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "active": {
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "active_diff": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "fatality_rate": {
+                        "type": "number",
+                        "example": 0.1667
+                    }
+                },
+                "type": "object"
+            },
+            "totalResponse": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/total"
+                    }
+                },
+                "type": "object"
+            },
+            "error422": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "HTTP Unprocessable Entity"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "example": {
+                            "some_field": [
+                                "Error description array for Some Field."
+                            ]
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "paginator": {
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "current_page": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "last_page": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "next_page_url": {
+                        "type": "string",
+                        "example": "/endpoint?page=3"
+                    },
+                    "prev_page_url": {
+                        "type": "string",
+                        "example": "/endpoint?page=1"
+                    },
+                    "from": {
+                        "type": "integer",
+                        "example": 21
+                    },
+                    "to": {
+                        "type": "integer",
+                        "example": 40
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "/endpoint"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "204": {
+                "description": "HTTP 204 No Content"
+            },
+            "400": {
+                "description": "HTTP 400 Bad Request"
+            },
+            "401": {
+                "description": "HTTP 401 Unauthorized"
+            },
+            "403": {
+                "description": "HTTP 403 Forbidden"
+            },
+            "404": {
+                "description": "HTTP 404 Not Found"
+            },
+            "422": {
+                "description": "HTTP 422 Unprocessable Entity",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/error422"
+                        }
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "provinceSorting": {
+                "name": "order",
+                "in": "query",
+                "description": "Province list sorting.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "id",
+                        "name",
+                        "province"
+                    ]
+                }
+            },
+            "regionSorting": {
+                "name": "order",
+                "in": "query",
+                "description": "Region list sorting.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "iso",
+                        "name"
+                    ]
+                }
+            },
+            "per_page": {
+                "name": "per_page",
+                "in": "query",
+                "description": "Per page for pagination.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "example": 20
+                }
+            },
+            "sort": {
+                "name": "sort",
+                "in": "query",
+                "description": "Sort directions.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ]
+                }
+            }
+        }
+    }
+}

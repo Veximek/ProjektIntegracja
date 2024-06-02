@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>twitter-32x32</title>
+    <g id="twitter-32x32" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="twitter" transform="translate(1, 1)" fill-rule="nonzero">
+            <circle id="Combined-Shape" fill="#0071BC" cx="15" cy="15" r="15"></circle>
+            <path d="M21.2798783,8 L20.068904,8 L15.6316431,13.1578741 L12.0876158,8 L8,8 L13.3592647,15.7996192 L8,22.0289298 L9.2110429,22.0289298 L13.8969047,16.5820394 L17.6396572,22.0289298 L21.727273,22.0289298 L16.1692946,13.9402944 L21.2798783,8 Z M14.5109028,15.8683356 L13.9678976,15.0916694 L9.64739859,8.91165565 L11.5074898,8.91165565 L14.9941829,13.899124 L15.537188,14.6757902 L20.069476,21.1587351 L18.2093847,21.1587351 L14.5109028,15.868633 L14.5109028,15.8683356 Z" id="Shape" stroke="#FFFFFF" stroke-width="0.3" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>
