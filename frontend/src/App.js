@@ -5,6 +5,7 @@ import Filter from './components/Filter';
 import Export from './components/Export';
 import Login from './components/Login';
 import Register from './components/Register';
+import './App.css';
 
 const App = () => {
   const [stats, setStats] = useState({ prePandemic: [], duringPandemic: [] });
@@ -46,8 +47,8 @@ const App = () => {
       });
 
       setStats({
-        prePandemic: prePandemicResponse.data.data,
-        duringPandemic: duringPandemicResponse.data.data
+        prePandemic: prePandemicResponse.data,
+        duringPandemic: duringPandemicResponse.data
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -89,6 +90,7 @@ const App = () => {
         </>
       ) : (
         <>
+        
           <Filter filters={filters} onFilterChange={handleFilterChange} />
           <button onClick={fetchData} disabled={isLoading}>
             {isLoading ? 'Fetching Data...' : 'Fetch Data'}

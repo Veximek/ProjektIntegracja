@@ -26,8 +26,8 @@ async function fetchCovidData(startDate, endDate, country) {
     try {
       const covidResponse = await axios.get(covidApiUrl, { params });
 
-      if (covidResponse.data.data && covidResponse.data.data.length > 0) {
-        const covidData = covidResponse.data.data[0];
+      if (covidResponse.data && covidResponse.data.length > 0) {
+        const covidData = covidResponse.data[0];
 
         transformedCovidData.push({
           year: year.toString(),
@@ -67,7 +67,7 @@ async function fetchGdpData(startDate, endDate, country) {
   try {
     const worldBankApiUrl = `https://api.worldbank.org/v2/country/${
       country ? country : "all"
-    }/indicator/NY.GDP.PCAP.CD?format=json&per_page=1000`;
+    }/indicator/NY.GDP.PCAP.CD?format=json&per_page=1000&strdate=${startDate}&enddate=${endDate}`;
     const gdpResponse = await axios.get(worldBankApiUrl);
     const gdpData = gdpResponse.data[1];
 

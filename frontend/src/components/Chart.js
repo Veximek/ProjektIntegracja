@@ -6,15 +6,17 @@ import {
 const Chart = ({ prePandemicData = [], duringPandemicData = [] }) => {
 
   // Data formatting for GDP (adjust to your actual data)
-  const formattedPrePandemicData = prePandemicData.map(item => ({
-    ...item,
-    gdpPerCapita: item.gdpPerCapita ? parseFloat(item.gdpPerCapita).toFixed(2) : null 
-  }));
+  const formattedPrePandemicData = prePandemicData
+  // .map(item => ({
+  //   ...item,
+  //   gdpPerCapita: item.gdpPerCapita ? parseFloat(item.gdpPerCapita).toFixed(2) : null 
+  // }));
 
-  const formattedDuringPandemicData = duringPandemicData.map(item => ({
-    ...item,
-    gdpPerCapita: item.gdpPerCapita ? parseFloat(item.gdpPerCapita).toFixed(2) : null
-  }));
+  const formattedDuringPandemicData = duringPandemicData
+  // .map(item => ({
+  //   ...item,
+  //   gdpPerCapita: item.gdpPerCapita ? parseFloat(item.gdpPerCapita).toFixed(2) : null
+  // }));
 
   return (
     <div>

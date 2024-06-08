@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+
+body {
+  background: dodgerblue linear-gradient(22deg, aqua, dodgerblue, deeppink) fixed;
+	color: white;
+  font: normal 32px/1.6 system-ui, sans-serif;
+	text-shadow: 0 1px 1px hsl(0 0% 0% / 20%);
+  margin: 3rem;
+}
+
+h1 {
+	font-weight: normal;
+}
