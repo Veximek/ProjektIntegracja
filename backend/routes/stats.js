@@ -2,23 +2,22 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const { query, validationResult } = require('express-validator');
-const authenticateJWT = require('../middleware/auth'); // Import the middleware
-const Stat = require('../models/Stat'); 
+const authenticateJWT = require('../middleware/auth');
+const Stat = require('../models/Stat');
 const NodeCache = require('node-cache');
 const myCache = new NodeCache();
 
-// --- Helper function to fetch data from the COVID API ---
+// Helper function to fetch data from the COVID API
 async function fetchCovidData(startDate, endDate, country) {
   const transformedCovidData = [];
-
   const startYear = parseInt(startDate.slice(0, 4), 10);
   const endYear = parseInt(endDate.slice(0, 4), 10);
 
   for (let year = startYear; year <= endYear; year++) {
     const date = `${year}-12-31`;
     const covidApiUrl = "https://covid-api.com/api/reports";
-
     const params = { date };
+
     if (country) {
       params.iso = country;
     }
@@ -26,12 +25,11 @@ async function fetchCovidData(startDate, endDate, country) {
     try {
       const covidResponse = await axios.get(covidApiUrl, { params });
 
-      if (covidResponse.data && covidResponse.data.length > 0) {
-        const covidData = covidResponse.data[0];
-
+      if (covidResponse.data && covidResponse.data.data && covidResponse.data.data.length > 0) {
+        const covidData = covidResponse.data.data[0];
         transformedCovidData.push({
           year: year.toString(),
-          country: covidData.region.name,
+          country: covidData.region.iso.toUpperCase(),
           cases: covidData.confirmed,
           deaths: covidData.deaths,
           recovered: covidData.recovered,
@@ -39,59 +37,57 @@ async function fetchCovidData(startDate, endDate, country) {
           fatalityRate: covidData.fatality_rate,
         });
       } else {
-        console.warn(
-          `No COVID data found for year ${year} and country ${country}`
-        );
+        console.warn(`No COVID data found for year ${year} and country ${country}`);
         transformedCovidData.push({
           year: year.toString(),
-          country: country || "Unknown",
-          cases: null, // Return null for missing data 
+          country: country.toUpperCase() || "Unknown",
+          cases: null,
           deaths: null,
           recovered: null,
           active: null,
-          fatalityRate: null
+          fatalityRate: null,
         });
-        // Push default data or handle as needed
       }
     } catch (error) {
       console.error(`Error fetching COVID data for year ${year}:`, error);
-      // Handle the error (e.g., push default data, retry, etc.)
     }
   }
 
   return transformedCovidData;
 }
 
-// --- GDP Route ---
+// Helper function to fetch GDP data from the World Bank API
 async function fetchGdpData(startDate, endDate, country) {
   try {
-    const worldBankApiUrl = `https://api.worldbank.org/v2/country/${
-      country ? country : "all"
-    }/indicator/NY.GDP.PCAP.CD?format=json&per_page=1000&strdate=${startDate}&enddate=${endDate}`;
+    const worldBankApiUrl = `https://api.worldbank.org/v2/country/${country}/indicator/NY.GDP.PCAP.CD?format=json&per_page=1000&date=${startDate.slice(0, 4)}:${endDate.slice(0, 4)}`;
     const gdpResponse = await axios.get(worldBankApiUrl);
-    const gdpData = gdpResponse.data[1];
 
-    return gdpData
-      .filter((item) => {
+    if (gdpResponse.data && gdpResponse.data.length > 1) {
+      const gdpData = gdpResponse.data[1];
+
+      return gdpData.filter((item) => {
         const year = parseInt(item.date, 10);
-        return year >= parseInt(startDate, 10) && year <= parseInt(endDate, 10);
-      })
-      .map((item) => ({
+        return year >= parseInt(startDate.slice(0, 4), 10) && year <= parseInt(endDate.slice(0, 4), 10);
+      }).map((item) => ({
         year: item.date,
-        country: item.country.value,
+        country: country.toUpperCase(),
         gdpPerCapita: item.value,
       }));
+    } else {
+      console.warn("No GDP data found.");
+      return [];
+    }
   } catch (error) {
     console.error("Error fetching GDP data:", error);
     throw error;
   }
 }
 
-// --- Helper function to merge COVID and GDP data ---
+// Helper function to merge COVID and GDP data
 function mergeData(covidData, gdpData) {
   const mergedData = covidData.map((covidEntry) => {
     const gdpEntry = gdpData.find(
-      (gdpEntry) => gdpEntry.year === covidEntry.year && gdpEntry.country === covidEntry.country
+      (gdpEntry) => gdpEntry.year === covidEntry.year && (gdpEntry.country === covidEntry.country || gdpEntry.country === 'US' && covidEntry.country === 'USA')
     );
     return {
       ...covidEntry,
@@ -102,8 +98,7 @@ function mergeData(covidData, gdpData) {
   return mergedData;
 }
 
-
-// --- Combined Route (GDP + COVID) ---
+// Helper function to save data to the database
 async function saveDataToDatabase(data, dataType) {
   for (let item of data) {
     item.dataType = dataType;
@@ -112,18 +107,12 @@ async function saveDataToDatabase(data, dataType) {
   }
 }
 
-
-// -----------------------------ROUTES----------------------------
-// Combined route
+// Combined route for fetching and saving COVID and GDP data
 router.get(
   "/combined-stats", authenticateJWT,
   [
-    query("startDate")
-      .isISO8601()
-      .withMessage("Invalid start date format. Use YYYY-MM-DD."),
-    query("endDate")
-      .isISO8601()
-      .withMessage("Invalid end date format. Use YYYY-MM-DD."),
+    query("startDate").isISO8601().withMessage("Invalid start date format. Use YYYY-MM-DD."),
+    query("endDate").isISO8601().withMessage("Invalid end date format. Use YYYY-MM-DD."),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -145,6 +134,9 @@ router.get(
         fetchCovidData(startDate, endDate, country),
         fetchGdpData(startDate, endDate, country)
       ]);
+
+      console.log('COVID Data:', covidData);
+      console.log('GDP Data:', gdpData);
 
       const aggregatedData = mergeData(covidData, gdpData);
 
