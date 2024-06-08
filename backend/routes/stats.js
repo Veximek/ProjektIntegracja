@@ -6,6 +6,7 @@ const authenticateJWT = require('../middleware/auth');
 const Stat = require('../models/Stat');
 const NodeCache = require('node-cache');
 const myCache = new NodeCache();
+const Cache = require('../models/Cache');
 
 // Helper function to fetch data from the COVID API
 async function fetchCovidData(startDate, endDate, country) {
@@ -123,13 +124,16 @@ router.get(
     try {
       const { startDate, endDate, country } = req.query;
       const cacheKey = `${startDate}-${endDate}-${country || 'all-countries'}`;
-      const cachedData = myCache.get(cacheKey);
+
+      // Check MongoDB for cached data
+      const cachedData = await Cache.findOne({ cacheKey });
 
       if (cachedData) {
-        console.log("Serving from cache!");
-        return res.json(cachedData);
+        console.log("Serving from MongoDB cache!");
+        return res.json(cachedData.data);
       }
 
+      // Fetch new data if not in cache
       const [covidData, gdpData] = await Promise.all([
         fetchCovidData(startDate, endDate, country),
         fetchGdpData(startDate, endDate, country)
@@ -149,7 +153,9 @@ router.get(
 
       await saveDataToDatabase(aggregatedData, new Date(endDate) < new Date('2020-03-01') ? 'pre-pandemic' : 'during-pandemic');
 
-      myCache.set(cacheKey, resultData, 60 * 60);
+      // Save new data to MongoDB cache
+      await Cache.create({ cacheKey, data: resultData });
+
       res.json(resultData);
     } catch (error) {
       console.error("Error:", error);
