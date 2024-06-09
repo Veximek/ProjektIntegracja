@@ -57,4 +57,21 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.post('/logout', (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(400).json({ error: 'No token provided' });
+    }
+
+    // Add token to blacklist
+    tokenBlacklist.push(token);
+
+    res.json({ message: 'User logged out successfully' });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ error: 'Logout failed' });
+  }
+});
+
 module.exports = router;

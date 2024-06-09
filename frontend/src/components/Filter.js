@@ -64,6 +64,13 @@ const Filter = ({
             value={filters.country}
             onChange={handleChange}
           />
+          <datalist id="fruits">
+      <option>Apple</option>
+      <option>Banana</option>
+      <option>Orange</option>
+      <option>Pineapple</option>
+      <option>Kiwi</option>
+    </datalist>
         </label>
       </div>
     </div>

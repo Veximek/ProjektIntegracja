@@ -8,12 +8,12 @@ import Register from './components/Register';
 import './App.css';
 
 const App = () => {
-  const [stats, setStats] = useState({ prePandemic: [], duringPandemic: [] });
+  const [stats, setStats] = useState({ prePandemic: "", duringPandemic: ""});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [filters, setFilters] = useState({
-    preStartDate: '2020-01-01',
+    preStartDate: '2018-01-01',
     preEndDate: '2020-12-31',
     postStartDate: '2020-01-01',
     postEndDate: new Date().toISOString().slice(0, 10),
@@ -47,9 +47,13 @@ const App = () => {
       });
 
       setStats({
-        prePandemic: prePandemicResponse.data,
-        duringPandemic: duringPandemicResponse.data
+        prePandemic: prePandemicResponse.data.data,
+        duringPandemic: duringPandemicResponse.data.data
       });
+      console.log("Pre-pandemic data for Chart:", prePandemicResponse.data.data);
+      console.log("During-pandemic data for Chart:", duringPandemicResponse.data.data);
+      console.log("Pre-pandemic data for Chart:", stats.prePandemic);
+      console.log("During-pandemic data for Chart:", stats.duringPandemic);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error);
@@ -74,6 +78,9 @@ const App = () => {
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
+  const logout = () =>{
+    setIsLoggedIn(false);
+  }
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -90,7 +97,8 @@ const App = () => {
         </>
       ) : (
         <>
-        
+              <button onClick={logout}>Wyloguj</button>
+
           <Filter filters={filters} onFilterChange={handleFilterChange} />
           <button onClick={fetchData} disabled={isLoading}>
             {isLoading ? 'Fetching Data...' : 'Fetch Data'}
@@ -103,6 +111,7 @@ const App = () => {
             <>
               <Chart prePandemicData={stats.prePandemic} duringPandemicData={stats.duringPandemic} />
               <Export data={stats} />
+
             </>
           )}
         </>
@@ -110,5 +119,7 @@ const App = () => {
     </div>
   );
 };
+
+
 
 export default App;
