@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Filter = ({ 
-  filters = { preStartDate: '', preEndDate: '', postStartDate: '', postEndDate: '', country: '' }, 
-  onFilterChange = () => {} 
+  filters = { preStartDate: '', preEndDate: '', postStartDate: '', postEndDate: '', country: '', region: '' }, 
+  onFilterChange = () => {},
+  onGetRegions = () => {}
 }) => {
+  const [regions, setRegions] = useState([]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     onFilterChange({ ...filters, [name]: value });
+  };
+
+  const handleGetRegions = async () => {
+    if (filters.country) {
+      try {
+        const token = localStorage.getItem('token');
+        const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await axios.get('http://localhost:5000/api/stats/regions', {
+          params: { country: filters.country },
+          headers: authHeader,
+        });
+        setRegions(response.data.regions);
+        onGetRegions(response.data.regions);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+      }
+    }
   };
 
   return (
@@ -64,13 +85,29 @@ const Filter = ({
             value={filters.country}
             onChange={handleChange}
           />
-          <datalist id="fruits">
-      <option>Apple</option>
-      <option>Banana</option>
-      <option>Orange</option>
-      <option>Pineapple</option>
-      <option>Kiwi</option>
-    </datalist>
+        </label>
+      </div>
+      <div>
+        <button onClick={handleGetRegions} disabled={!filters.country}>
+          Get Regions
+        </button>
+      </div>
+      <div>
+        <label>
+          Region:
+          <select
+            name="region"
+            value={filters.region}
+            onChange={handleChange}
+            disabled={!filters.country || regions.length === 0}
+          >
+            <option value="">Select a region</option>
+            {regions.map((region, index) => (
+              <option key={index} value={region}>
+                {region}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
     </div>

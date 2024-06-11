@@ -9,7 +9,7 @@ const myCache = new NodeCache();
 const Cache = require('../models/Cache');
 
 // Helper function to fetch data from the COVID API
-async function fetchCovidData(startDate, endDate, country) {
+async function fetchCovidData(startDate, endDate, country, province = null) {
   const transformedCovidData = [];
   const startYear = parseInt(startDate.slice(0, 4), 10);
   const endYear = parseInt(endDate.slice(0, 4), 10);
@@ -17,31 +17,64 @@ async function fetchCovidData(startDate, endDate, country) {
   for (let year = startYear; year <= endYear; year++) {
     const date = `${year}-12-31`;
     const covidApiUrl = "https://covid-api.com/api/reports";
-    const params = { date };
-
-    if (country) {
-      params.iso = country;
-    }
+    const params = { date, iso: country };
 
     try {
       const covidResponse = await axios.get(covidApiUrl, { params });
 
       if (covidResponse.data && covidResponse.data.data && covidResponse.data.data.length > 0) {
-        const covidData = covidResponse.data.data[0];
-        transformedCovidData.push({
-          year: year.toString(),
-          country: covidData.region.iso.toUpperCase(),
-          cases: covidData.confirmed,
-          deaths: covidData.deaths,
-          recovered: covidData.recovered,
-          active: covidData.active,
-          fatalityRate: covidData.fatality_rate,
-        });
+        if (province) {
+          const regionData = covidResponse.data.data.find(r => r.region.province.toLowerCase() === province.toLowerCase());
+          if (regionData) {
+            transformedCovidData.push({
+              year: year.toString(),
+              country: country.toUpperCase(),
+              region: regionData.region.province || regionData.region.name,
+              cases: regionData.confirmed,
+              deaths: regionData.deaths,
+              recovered: regionData.recovered,
+              active: regionData.active,
+              fatalityRate: regionData.fatality_rate,
+            });
+          } else {
+            transformedCovidData.push({
+              year: year.toString(),
+              country: country.toUpperCase(),
+              region: province,
+              cases: null,
+              deaths: null,
+              recovered: null,
+              active: null,
+              fatalityRate: null,
+            });
+          }
+        } else {
+          let confirmed = 0;
+          let deaths = 0;
+          let recovered = 0;
+          let active = 0;
+          covidResponse.data.data.forEach(regionData => {
+            confirmed += regionData.confirmed;
+            deaths += regionData.deaths;
+            recovered += regionData.recovered;
+            active += regionData.active;
+          });
+          const fatalityRate = deaths / confirmed;
+
+          transformedCovidData.push({
+            year: year.toString(),
+            country: country.toUpperCase(),
+            cases: confirmed,
+            deaths: deaths,
+            recovered: recovered,
+            active: active,
+            fatalityRate: fatalityRate,
+          });
+        }
       } else {
-        console.warn(`No COVID data found for year ${year} and country ${country}`);
         transformedCovidData.push({
           year: year.toString(),
-          country: country.toUpperCase() || "Unknown",
+          country: country.toUpperCase(),
           cases: null,
           deaths: null,
           recovered: null,
@@ -56,6 +89,28 @@ async function fetchCovidData(startDate, endDate, country) {
 
   return transformedCovidData;
 }
+
+router.get('/regions', authenticateJWT, async (req, res) => {
+  const { country } = req.query;
+  const covidApiUrl = "https://covid-api.com/api/reports";
+  const params = { iso: country };
+
+  console.log("/region: req.query", req.query);
+  console.log("/region: params", params);
+
+  try {
+    const covidResponse = await axios.get(covidApiUrl, { params });
+    const regions = covidResponse.data.data.map(regionData => regionData.region.province).filter(Boolean);
+
+    res.json({ regions });
+  } catch (error) {
+    console.error('Error fetching regions:', error);
+    res.status(500).json({ message: 'Error fetching regions', details: error.message });
+  }
+});
+
+
+
 
 // Helper function to fetch GDP data from the World Bank API
 async function fetchGdpData(startDate, endDate, country) {
@@ -114,6 +169,8 @@ router.get(
   [
     query("startDate").isISO8601().withMessage("Invalid start date format. Use YYYY-MM-DD."),
     query("endDate").isISO8601().withMessage("Invalid end date format. Use YYYY-MM-DD."),
+    query("country").isLength({ min: 2, max: 3 }).withMessage("Invalid country code format. Use ISO 3166-1 alpha-2 or alpha-3."),
+    query("region").optional().isLength({ min: 2 }).withMessage("Invalid region code format."),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -122,8 +179,8 @@ router.get(
     }
 
     try {
-      const { startDate, endDate, country } = req.query;
-      const cacheKey = `${startDate}-${endDate}-${country || 'all-countries'}`;
+      const { startDate, endDate, country, region } = req.query;
+      const cacheKey = `${startDate}-${endDate}-${country}-${region || 'all-regions'}`;
 
       // Check MongoDB for cached data
       const cachedData = await Cache.findOne({ cacheKey });
@@ -135,7 +192,7 @@ router.get(
 
       // Fetch new data if not in cache
       const [covidData, gdpData] = await Promise.all([
-        fetchCovidData(startDate, endDate, country),
+        fetchCovidData(startDate, endDate, country, region),
         fetchGdpData(startDate, endDate, country)
       ]);
 
@@ -147,7 +204,8 @@ router.get(
       const resultData = {
         startDate,
         endDate,
-        country: country || "Global",
+        country: country.toUpperCase(),
+        region: region || "All",
         data: aggregatedData,
       };
 
@@ -164,23 +222,30 @@ router.get(
   }
 );
 
-// Export data route
+const express = require('express');
+const json2xml = require('json2xml');
+const { authenticateJWT } = require('../middleware/auth');
+
 router.get('/export', authenticateJWT, async (req, res) => {
   const { format } = req.query;
+
   try {
-    const stats = await Stat.find();
-    let responseData;
+    // Replace this with your actual data fetching logic
+    const data = {
+      prePandemic: "Pre-Pandemic Data",
+      duringPandemic: "During-Pandemic Data"
+    };
 
     if (format === 'xml') {
-      responseData = json2xml({ stats });
+      const xmlData = json2xml(data);
       res.header('Content-Type', 'application/xml');
+      res.send(xmlData);
     } else {
-      responseData = stats;
       res.header('Content-Type', 'application/json');
+      res.json(data);
     }
-
-    res.send(responseData);
   } catch (error) {
+    console.error('Error exporting data:', error);
     res.status(500).json({ message: 'Error exporting data', details: error.message });
   }
 });

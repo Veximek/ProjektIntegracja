@@ -17,8 +17,10 @@ const App = () => {
     preEndDate: '2020-12-31',
     postStartDate: '2020-01-01',
     postEndDate: new Date().toISOString().slice(0, 10),
-    country: 'USA'
+    country: 'USA',
+    region: ''
   });
+  const [regions, setRegions] = useState([]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -32,7 +34,8 @@ const App = () => {
         params: {
           startDate: filters.preStartDate,
           endDate: filters.preEndDate,
-          country: filters.country
+          country: filters.country,
+          region: filters.region
         },
         headers: authHeader
       });
@@ -41,7 +44,8 @@ const App = () => {
         params: {
           startDate: filters.postStartDate,
           endDate: filters.postEndDate,
-          country: filters.country
+          country: filters.country,
+          region: filters.region
         },
         headers: authHeader
       });
@@ -50,10 +54,6 @@ const App = () => {
         prePandemic: prePandemicResponse.data.data,
         duringPandemic: duringPandemicResponse.data.data
       });
-      console.log("Pre-pandemic data for Chart:", prePandemicResponse.data.data);
-      console.log("During-pandemic data for Chart:", duringPandemicResponse.data.data);
-      console.log("Pre-pandemic data for Chart:", stats.prePandemic);
-      console.log("During-pandemic data for Chart:", stats.duringPandemic);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(error);
@@ -69,22 +69,20 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchData();
-    }
-  }, [isLoggedIn]);
-
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
-  const logout = () =>{
+
+  const handleGetRegions = (newRegions) => {
+    setRegions(newRegions);
+  };
+
+  const logout = () => {
     setIsLoggedIn(false);
-  }
+  };
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    fetchData();
   };
 
   return (
@@ -97,21 +95,17 @@ const App = () => {
         </>
       ) : (
         <>
-              <button onClick={logout}>Wyloguj</button>
-
-          <Filter filters={filters} onFilterChange={handleFilterChange} />
+          <button onClick={logout}>Wyloguj</button>
+          <Filter filters={filters} onFilterChange={handleFilterChange} onGetRegions={handleGetRegions} />
           <button onClick={fetchData} disabled={isLoading}>
             {isLoading ? 'Fetching Data...' : 'Fetch Data'}
           </button>
-
           {isLoading && <div>Loading data...</div>}
           {error && <div>Error: {error.message}</div>}
-
           {!isLoading && !error && (
             <>
               <Chart prePandemicData={stats.prePandemic} duringPandemicData={stats.duringPandemic} />
               <Export data={stats} />
-
             </>
           )}
         </>
@@ -119,7 +113,5 @@ const App = () => {
     </div>
   );
 };
-
-
 
 export default App;
